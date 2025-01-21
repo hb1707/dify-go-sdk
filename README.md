@@ -5,11 +5,7 @@
 ## 安装
 
 ```bash
-<<<<<<< HEAD
-go get github.com/hb170/dify-go-sdk
-=======
 go get github.com/hb1707/dify-go-sdk
->>>>>>> aa2eee1 (init)
 ```
 
 ## 快速开始
@@ -17,13 +13,15 @@ go get github.com/hb1707/dify-go-sdk
 ### 初始化客户端
 
 ```go
-<<<<<<< HEAD
-import "github.com/hb170/dify-go-sdk/dify"
-=======
 import "github.com/hb1707/dify-go-sdk/dify"
->>>>>>> aa2eee1 (init)
 
+// 基本用法
 client := dify.NewClient("your-api-key")
+
+// 使用选项配置
+client = dify.NewClient("your-api-key",
+    dify.WithBaseURL("https://your-custom-url.com"),
+)
 ```
 
 ### 阻塞模式示例
@@ -74,14 +72,16 @@ for {
 ### 自定义配置
 
 ```go
-// 自定义基础 URL
-client := dify.NewClient("your-api-key", dify.WithBaseURL("https://your-custom-url.com"))
-
 // 自定义 HTTP 客户端
 httpClient := &http.Client{
     Timeout: time.Second * 60,
 }
-client := dify.NewClient("your-api-key", dify.WithHTTPClient(httpClient))
+
+// 使用选项配置客户端
+client := dify.NewClient("your-api-key",
+    dify.WithHTTPClient(httpClient),
+    dify.WithBaseURL("https://your-custom-url.com"),
+)
 ```
 
 ## 特性

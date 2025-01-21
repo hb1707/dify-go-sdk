@@ -15,8 +15,34 @@ type Client struct {
 	HTTPClient *http.Client
 }
 
+// ClientOption 定义客户端选项接口
+type ClientOption interface {
+	apply(*Client)
+}
+
+// clientOptionFunc 是一个适配器，允许使用普通函数作为 ClientOption
+type clientOptionFunc func(*Client)
+
+func (f clientOptionFunc) apply(c *Client) {
+	f(c)
+}
+
+// WithBaseURL 设置自定义的基础 URL
+func WithBaseURL(baseURL string) ClientOption {
+	return clientOptionFunc(func(c *Client) {
+		c.BaseURL = baseURL
+	})
+}
+
+// WithHTTPClient 设置自定义的 HTTP 客户端
+func WithHTTPClient(httpClient *http.Client) ClientOption {
+	return clientOptionFunc(func(c *Client) {
+		c.HTTPClient = httpClient
+	})
+}
+
 // NewClient creates a new Dify API client
-func NewClient(apiKey string) *Client {
+func NewClient(apiKey string, opts ...ClientOption) *Client {
 	httpClient := &http.Client{
 		Timeout: time.Second * 30,
 		Transport: &http.Transport{
@@ -26,9 +52,16 @@ func NewClient(apiKey string) *Client {
 		},
 	}
 
-	return &Client{
-		BaseURL:    DefaultBaseURL,
+	c := &Client{
+		BaseURL:    "https://api.dify.com", // DefaultBaseURL
 		APIKey:     apiKey,
 		HTTPClient: httpClient,
 	}
+
+	// 应用选项
+	for _, opt := range opts {
+		opt.apply(c)
+	}
+
+	return c
 }
