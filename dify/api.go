@@ -1,0 +1,27 @@
+package dify
+
+const (
+	// DefaultBaseURL 默认的API基础URL
+	DefaultBaseURL = "https://api.dify.ai/v1"
+
+	// API 端点
+	EndpointCompletion = "/completion-messages" // 文本生成
+	EndpointMessages   = "/messages"            // 消息相关
+	EndpointFiles      = "/files"               // 文件上传
+	EndpointAudio      = "/audio"               // 音频相关
+)
+
+// API响应模式
+const (
+	ResponseModeBlocking  = "blocking"  // 阻塞模式
+	ResponseModeStreaming = "streaming" // 流式模式
+)
+
+// 示例常量
+const (
+	// UserExample 用户ID示例
+	UserExample = "user123"
+
+	// QueryExample 查询示例
+	QueryExample = "你好，请介绍一下你自己"
+)
