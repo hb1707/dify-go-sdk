@@ -1,8 +1,9 @@
 package dify
 
+// DefaultBaseURL 默认的API基础URL
+var DefaultBaseURL = "https://api.dify.ai/v1"
+
 const (
-	// DefaultBaseURL 默认的API基础URL
-	DefaultBaseURL = "https://api.dify.ai/v1"
 
 	// API 端点
 	EndpointCompletion = "/completion-messages" // 文本生成
@@ -21,7 +22,7 @@ const (
 )
 
 // 示例常量
-const (
+var (
 	// UserExample 用户ID示例
 	UserExample = "user123"
 
