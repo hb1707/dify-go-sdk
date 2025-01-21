@@ -53,7 +53,7 @@ func NewClient(apiKey string, opts ...ClientOption) *Client {
 	}
 
 	c := &Client{
-		BaseURL:    "https://api.dify.com", // DefaultBaseURL
+		BaseURL:    DefaultBaseURL,
 		APIKey:     apiKey,
 		HTTPClient: httpClient,
 	}

@@ -14,7 +14,7 @@ func (c *Client) SendFeedback(messageID string, feedback *FeedbackRequest) error
 		return err
 	}
 
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/messages/%s/feedbacks", c.BaseURL, messageID), bytes.NewBuffer(data))
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s%s/%s%s", c.BaseURL, EndpointMessages, messageID, EndpointFeedbacks), bytes.NewBuffer(data))
 	if err != nil {
 		return err
 	}
