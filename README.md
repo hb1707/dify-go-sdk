@@ -5,7 +5,11 @@
 ## 安装
 
 ```bash
+<<<<<<< HEAD
 go get github.com/hb170/dify-go-sdk
+=======
+go get github.com/hb1707/dify-go-sdk
+>>>>>>> aa2eee1 (init)
 ```
 
 ## 快速开始
@@ -13,7 +17,11 @@ go get github.com/hb170/dify-go-sdk
 ### 初始化客户端
 
 ```go
+<<<<<<< HEAD
 import "github.com/hb170/dify-go-sdk/dify"
+=======
+import "github.com/hb1707/dify-go-sdk/dify"
+>>>>>>> aa2eee1 (init)
 
 client := dify.NewClient("your-api-key")
 ```
