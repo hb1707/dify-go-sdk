@@ -71,6 +71,9 @@ func (c *Client) CreateStreamingChat(req *ChatRequest, handler StreamHandler) er
 	httpReq.Header.Set("Authorization", "Bearer "+c.APIKey)
 	httpReq.Header.Set("Content-Type", "application/json")
 	httpReq.Header.Set("Accept", "text/event-stream")
+	httpReq.Header.Set("Connection", "keep-alive")
+	httpReq.Header.Set("Cache-Control", "no-cache")
+	httpReq.Header.Set("Transfer-Encoding", "chunked")
 
 	resp, err := c.HTTPClient.Do(httpReq)
 	if err != nil {

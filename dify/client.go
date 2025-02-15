@@ -44,7 +44,7 @@ func WithHTTPClient(httpClient *http.Client) ClientOption {
 // NewClient creates a new Dify API client
 func NewClient(apiKey string, opts ...ClientOption) *Client {
 	httpClient := &http.Client{
-		Timeout: time.Second * 30,
+		Timeout: time.Minute * 10,
 		Transport: &http.Transport{
 			MaxIdleConns:        100,
 			MaxIdleConnsPerHost: 100,
