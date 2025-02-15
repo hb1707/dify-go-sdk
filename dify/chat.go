@@ -152,6 +152,17 @@ func (c *Client) CreateStreamingChat(req *ChatRequest, handler StreamHandler) er
 			if err := handler.OnTTS(&resp); err != nil {
 				return err
 			}
+		default:
+			var resp WorkflowStreamResponse
+			if err := json.Unmarshal([]byte(data), &resp); err != nil {
+				if err := handler.OnError(err); err != nil {
+					return err
+				}
+				continue
+			}
+			if err := handler.OnMessageWorkflow(&resp); err != nil {
+				return err
+			}
 		}
 	}
 

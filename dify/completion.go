@@ -53,6 +53,7 @@ func (c *Client) CreateCompletion(req *CompletionRequest) (*CompletionResponse, 
 // StreamHandler 流式响应处理函数类型
 type StreamHandler interface {
 	OnMessage(response *MessageStreamResponse) error
+	OnMessageWorkflow(response *WorkflowStreamResponse) error
 	OnMessageEnd(response *MessageEndStreamResponse) error
 	OnTTS(response *TTSStreamResponse) error
 	OnError(err error) error
@@ -160,7 +161,9 @@ func (c *Client) CreateStreamingCompletion(req *CompletionRequest, handler Strea
 			if err := handler.OnTTS(&resp); err != nil {
 				return err
 			}
+
 		}
+
 	}
 
 	return nil

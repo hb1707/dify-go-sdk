@@ -65,10 +65,11 @@ type RetrieverResource struct {
 
 // StreamResponse 流式响应的基础结构
 type StreamResponse struct {
-	Event     string `json:"event"`
-	TaskID    string `json:"task_id"`
-	MessageID string `json:"message_id"`
-	CreatedAt int64  `json:"created_at"`
+	Event          string `json:"event"`
+	TaskID         string `json:"task_id"`
+	ConversationId string `json:"conversation_id,omitempty"`
+	MessageID      string `json:"message_id"`
+	CreatedAt      int64  `json:"created_at"`
 }
 
 // MessageStreamResponse 消息事件响应
@@ -87,6 +88,10 @@ type MessageEndStreamResponse struct {
 type TTSStreamResponse struct {
 	StreamResponse
 	Audio string `json:"audio"` // base64编码的MP3音频数据
+}
+type WorkflowStreamResponse struct {
+	StreamResponse
+	Data WorkflowData `json:"data"`
 }
 
 // FileUploadResponse 文件上传响应
@@ -152,4 +157,24 @@ type SystemParameters struct {
 	ImageFileSizeLimit int `json:"image_file_size_limit"`
 	AudioFileSizeLimit int `json:"audio_file_size_limit"`
 	VideoFileSizeLimit int `json:"video_file_size_limit"`
+}
+
+// WorkflowData 工作流数据
+type WorkflowData struct {
+	Id                string      `json:"id"`
+	NodeId            string      `json:"node_id"`
+	NodeType          string      `json:"node_type"`
+	Title             string      `json:"title"`
+	Index             int         `json:"index"`
+	PredecessorNodeId string      `json:"predecessor_node_id"`
+	Inputs            interface{} `json:"inputs,omitempty"`
+	CreatedAt         int         `json:"created_at"`
+	Extras            struct {
+	} `json:"extras"`
+	ParallelId                interface{} `json:"parallel_id"`
+	ParallelStartNodeId       interface{} `json:"parallel_start_node_id"`
+	ParentParallelId          interface{} `json:"parent_parallel_id"`
+	ParentParallelStartNodeId interface{} `json:"parent_parallel_start_node_id"`
+	IterationId               interface{} `json:"iteration_id"`
+	ParallelRunId             interface{} `json:"parallel_run_id"`
 }
