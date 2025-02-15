@@ -1,9 +1,17 @@
 package dify
 
+// ChatRequest 完成请求的结构体
+type ChatRequest struct {
+	Inputs       map[string]string `json:"inputs" validate:"required"`
+	Query        string            `json:"query"`
+	ResponseMode string            `json:"response_mode,omitempty" validate:"omitempty,oneof=blocking streaming"`
+	User         string            `json:"user,omitempty" validate:"omitempty,min=1"`
+	Files        []FileInput       `json:"files,omitempty" validate:"omitempty,dive"`
+}
+
 // CompletionRequest 完成请求的结构体
 type CompletionRequest struct {
 	Inputs       map[string]string `json:"inputs" validate:"required"`
-	Query        string            `json:"query"`
 	ResponseMode string            `json:"response_mode,omitempty" validate:"omitempty,oneof=blocking streaming"`
 	User         string            `json:"user,omitempty" validate:"omitempty,min=1"`
 	Files        []FileInput       `json:"files,omitempty" validate:"omitempty,dive"`
@@ -15,6 +23,17 @@ type FileInput struct {
 	TransferMethod string `json:"transfer_method" validate:"required,oneof=remote_url local_file"` // "remote_url" 或 "local_file"
 	URL            string `json:"url,omitempty" validate:"required_if=TransferMethod remote_url,url"`
 	UploadFileID   string `json:"upload_file_id,omitempty" validate:"required_if=TransferMethod local_file"`
+}
+
+// ChatResponse 完成响应的结构体（阻塞模式）
+type ChatResponse struct {
+	Event          string           `json:"event"`
+	MessageID      string           `json:"message_id"`
+	ConversationId string           `json:"conversation_id"`
+	Mode           string           `json:"mode"` // 固定为 "chat"
+	Answer         string           `json:"answer"`
+	Metadata       ResponseMetadata `json:"metadata"`
+	CreatedAt      int64            `json:"created_at"`
 }
 
 // CompletionResponse 完成响应的结构体（阻塞模式）

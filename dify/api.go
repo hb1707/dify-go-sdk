@@ -3,9 +3,9 @@ package dify
 // DefaultBaseURL 默认的API基础URL
 var DefaultBaseURL = "https://api.dify.ai/v1"
 
+// API 端点
 const (
-
-	// API 端点
+	EndpointChat       = "/chat-messages"       // 聊天相关
 	EndpointCompletion = "/completion-messages" // 文本生成
 	EndpointMessages   = "/messages"            // 消息相关
 	EndpointFiles      = "/files"               // 文件上传
