@@ -1,10 +1,8 @@
 package dify
 
-import "fmt"
-
 // CompletionRequest 完成请求的结构体
 type CompletionRequest struct {
-	Inputs       map[string]string `json:"inputs"`
+	Inputs       map[string]string `json:"inputs" validate:"required"`
 	Query        string            `json:"query"`
 	ResponseMode string            `json:"response_mode,omitempty" validate:"omitempty,oneof=blocking streaming"`
 	User         string            `json:"user,omitempty" validate:"omitempty,min=1"`
@@ -135,37 +133,4 @@ type SystemParameters struct {
 	ImageFileSizeLimit int `json:"image_file_size_limit"`
 	AudioFileSizeLimit int `json:"audio_file_size_limit"`
 	VideoFileSizeLimit int `json:"video_file_size_limit"`
-}
-
-// Validate validates the CompletionRequest struct
-func (r *CompletionRequest) Validate() error {
-	if r.Inputs == nil || len(r.Inputs) == 0 {
-		return fmt.Errorf("inputs is required and cannot be empty")
-	}
-
-	if r.ResponseMode != "" && r.ResponseMode != "blocking" && r.ResponseMode != "streaming" {
-		return fmt.Errorf("response_mode must be either 'blocking' or 'streaming'")
-	}
-
-	if r.User != "" && len(r.User) < 1 {
-		return fmt.Errorf("user must be at least 1 character long")
-	}
-
-	// Validate files if present
-	for _, file := range r.Files {
-		if file.Type != "image" {
-			return fmt.Errorf("file type must be 'image'")
-		}
-		if file.TransferMethod != "remote_url" && file.TransferMethod != "local_file" {
-			return fmt.Errorf("transfer_method must be either 'remote_url' or 'local_file'")
-		}
-		if file.TransferMethod == "remote_url" && file.URL == "" {
-			return fmt.Errorf("url is required when transfer_method is 'remote_url'")
-		}
-		if file.TransferMethod == "local_file" && file.UploadFileID == "" {
-			return fmt.Errorf("upload_file_id is required when transfer_method is 'local_file'")
-		}
-	}
-
-	return nil
 }
