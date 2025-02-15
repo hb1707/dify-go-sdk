@@ -4,7 +4,8 @@ import "fmt"
 
 // CompletionRequest 完成请求的结构体
 type CompletionRequest struct {
-	Inputs       map[string]string `json:"inputs" validate:"required"`
+	Inputs       map[string]string `json:"inputs"`
+	Query        string            `json:"query"`
 	ResponseMode string            `json:"response_mode,omitempty" validate:"omitempty,oneof=blocking streaming"`
 	User         string            `json:"user,omitempty" validate:"omitempty,min=1"`
 	Files        []FileInput       `json:"files,omitempty" validate:"omitempty,dive"`
