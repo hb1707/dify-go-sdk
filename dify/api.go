@@ -13,6 +13,7 @@ const (
 	EndpointInfo       = "/info"                // 应用信息
 	EndpointParameters = "/parameters"          // 应用参数
 	EndpointFeedbacks  = "/feedbacks"           // 消息反馈
+	EndpointWorkflows  = "/workflows"           // 工作流
 )
 
 // API响应模式

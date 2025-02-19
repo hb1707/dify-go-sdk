@@ -69,6 +69,7 @@ type StreamResponse struct {
 	TaskID         string `json:"task_id"`
 	ConversationId string `json:"conversation_id,omitempty"`
 	MessageID      string `json:"message_id"`
+	WorkflowRunId  string `json:"workflow_run_id,omitempty"`
 	CreatedAt      int64  `json:"created_at"`
 }
 
