@@ -5,15 +5,16 @@ var DefaultBaseURL = "https://api.dify.ai/v1"
 
 // API 端点
 const (
-	EndpointChat       = "/chat-messages"       // 聊天相关
-	EndpointCompletion = "/completion-messages" // 文本生成
-	EndpointMessages   = "/messages"            // 消息相关
-	EndpointFiles      = "/files"               // 文件上传
-	EndpointAudio      = "/audio"               // 音频相关
-	EndpointInfo       = "/info"                // 应用信息
-	EndpointParameters = "/parameters"          // 应用参数
-	EndpointFeedbacks  = "/feedbacks"           // 消息反馈
-	EndpointWorkflows  = "/workflows"           // 工作流
+	EndpointChat          = "/chat-messages"       // 聊天相关
+	EndpointCompletion    = "/completion-messages" // 文本生成
+	EndpointMessages      = "/messages"            // 消息相关
+	EndpointFiles         = "/files"               // 文件上传
+	EndpointAudio         = "/audio"               // 音频相关
+	EndpointInfo          = "/info"                // 应用信息
+	EndpointParameters    = "/parameters"          // 应用参数
+	EndpointFeedbacks     = "/feedbacks"           // 消息反馈
+	EndpointWorkflows     = "/workflows"           // 工作流
+	EndpointConversations = "/conversations"       // 会话
 )
 
 // API响应模式

@@ -2,19 +2,23 @@ package dify
 
 // ChatRequest 完成请求的结构体
 type ChatRequest struct {
-	Inputs       map[string]string `json:"inputs" validate:"required"`
-	Query        string            `json:"query"`
-	ResponseMode string            `json:"response_mode,omitempty" validate:"omitempty,oneof=blocking streaming"`
-	User         string            `json:"user,omitempty" validate:"omitempty,min=1"`
-	Files        []FileInput       `json:"files,omitempty" validate:"omitempty,dive"`
+	Inputs           map[string]string `json:"inputs" validate:"required"`
+	Query            string            `json:"query"`
+	ResponseMode     string            `json:"response_mode,omitempty" validate:"omitempty,oneof=blocking streaming"`
+	ConversationId   string            `json:"conversation_id,omitempty"`
+	User             string            `json:"user,omitempty" validate:"omitempty,min=1"`
+	Files            []FileInput       `json:"files,omitempty" validate:"omitempty,dive"`
+	AutoGenerateName bool              `json:"auto_generate_name,omitempty"`
 }
 
 // CompletionRequest 完成请求的结构体
 type CompletionRequest struct {
-	Inputs       map[string]string `json:"inputs" validate:"required"`
-	ResponseMode string            `json:"response_mode,omitempty" validate:"omitempty,oneof=blocking streaming"`
-	User         string            `json:"user,omitempty" validate:"omitempty,min=1"`
-	Files        []FileInput       `json:"files,omitempty" validate:"omitempty,dive"`
+	Inputs           map[string]string `json:"inputs" validate:"required"`
+	ResponseMode     string            `json:"response_mode,omitempty" validate:"omitempty,oneof=blocking streaming"`
+	User             string            `json:"user,omitempty" validate:"omitempty,min=1"`
+	ConversationId   string            `json:"conversation_id,omitempty"`
+	Files            []FileInput       `json:"files,omitempty" validate:"omitempty,dive"`
+	AutoGenerateName bool              `json:"auto_generate_name,omitempty"`
 }
 
 // FileInput 文件输入的结构体
