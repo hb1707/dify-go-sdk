@@ -6,6 +6,7 @@ type ChatRequest struct {
 	Query            string            `json:"query"`
 	ResponseMode     string            `json:"response_mode,omitempty" validate:"omitempty,oneof=blocking streaming"`
 	ConversationId   string            `json:"conversation_id,omitempty"`
+	ParentMessageId  string            `json:"parent_message_id,omitempty"`
 	User             string            `json:"user,omitempty" validate:"omitempty,min=1"`
 	Files            []FileInput       `json:"files,omitempty" validate:"omitempty,dive"`
 	AutoGenerateName bool              `json:"auto_generate_name,omitempty"`
@@ -17,16 +18,17 @@ type CompletionRequest struct {
 	ResponseMode     string            `json:"response_mode,omitempty" validate:"omitempty,oneof=blocking streaming"`
 	User             string            `json:"user,omitempty" validate:"omitempty,min=1"`
 	ConversationId   string            `json:"conversation_id,omitempty"`
+	ParentMessageId  string            `json:"parent_message_id,omitempty"`
 	Files            []FileInput       `json:"files,omitempty" validate:"omitempty,dive"`
 	AutoGenerateName bool              `json:"auto_generate_name,omitempty"`
 }
 
 // FileInput 文件输入的结构体
 type FileInput struct {
-	Type           string `json:"type" validate:"required,eq=image"`                               // 目前仅支持 "image"
-	TransferMethod string `json:"transfer_method" validate:"required,oneof=remote_url local_file"` // "remote_url" 或 "local_file"
-	URL            string `json:"url,omitempty" validate:"required_if=TransferMethod remote_url,url"`
-	UploadFileID   string `json:"upload_file_id,omitempty" validate:"required_if=TransferMethod local_file"`
+	Type           string `json:"type"`
+	TransferMethod string `json:"transfer_method"`
+	URL            string `json:"url,omitempty"`
+	UploadFileID   string `json:"upload_file_id,omitempty"`
 }
 
 // ChatResponse 完成响应的结构体（阻塞模式）
