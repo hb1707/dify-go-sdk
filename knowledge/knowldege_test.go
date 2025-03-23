@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-var Key = ""
+var Key = "Your-API-Key"
 
 // 测试创建知识库
 func TestCreateKnowledge(t *testing.T) {
@@ -287,4 +287,80 @@ func TestUpdateDocumentByFile(t *testing.T) {
 		t.Fatal(err)
 	}
 	fmt.Printf("更新文档成功: %+v\n", doc)
+}
+
+// 测试检索知识库
+func TestRetrieve(t *testing.T) {
+	client := NewClient(Key)
+	datasetID := "9dc6342e-0c81-4f4e-9ef8-07d7c94ae0fe"
+
+	// 构造请求参数
+	req := &RetrieveRequest{
+		Query: "测试文档",
+		RetrievalModel: &RetrievalModel{
+			SearchMethod:          "hybrid_search",
+			RerankingEnable:       false,
+			TopK:                  3,
+			ScoreThresholdEnabled: true,
+			ScoreThreshold:        0.7,
+		},
+	}
+
+	// 发送检索请求
+	resp, err := client.Retrieve(context.Background(), datasetID, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// 打印检索结果
+	fmt.Printf("查询内容: %s\n", resp.Query.Content)
+	fmt.Printf("\n检索结果:\n")
+	for i, record := range resp.Records {
+		fmt.Printf("\n记录 %d:\n", i+1)
+		segment := record.Segment
+		fmt.Printf("片段ID: %s\n", segment.ID)
+		fmt.Printf("位置: %d\n", segment.Position)
+		fmt.Printf("文档ID: %s\n", segment.DocumentID)
+		fmt.Printf("内容: %s\n", segment.Content)
+		if segment.Answer != nil {
+			fmt.Printf("答案: %s\n", *segment.Answer)
+		}
+		fmt.Printf("字数: %d\n", segment.WordCount)
+		fmt.Printf("Token数: %d\n", segment.Tokens)
+		fmt.Printf("关键词: %v\n", segment.Keywords)
+		fmt.Printf("索引节点ID: %s\n", segment.IndexNodeID)
+		fmt.Printf("索引节点哈希: %s\n", segment.IndexNodeHash)
+		fmt.Printf("命中次数: %d\n", segment.HitCount)
+		fmt.Printf("是否启用: %v\n", segment.Enabled)
+		if segment.DisabledAt != nil {
+			fmt.Printf("禁用时间: %d\n", *segment.DisabledAt)
+		}
+		if segment.DisabledBy != nil {
+			fmt.Printf("禁用者: %s\n", *segment.DisabledBy)
+		}
+		fmt.Printf("状态: %s\n", segment.Status)
+		fmt.Printf("创建者: %s\n", segment.CreatedBy)
+		fmt.Printf("创建时间: %d\n", segment.CreatedAt)
+		fmt.Printf("索引时间: %d\n", segment.IndexingAt)
+		fmt.Printf("完成时间: %d\n", segment.CompletedAt)
+		if segment.Error != nil {
+			fmt.Printf("错误: %s\n", *segment.Error)
+		}
+		if segment.StoppedAt != nil {
+			fmt.Printf("停止时间: %d\n", *segment.StoppedAt)
+		}
+		if segment.Document != nil {
+			fmt.Printf("文档信息:\n")
+			fmt.Printf("  ID: %s\n", segment.Document.ID)
+			fmt.Printf("  数据源类型: %s\n", segment.Document.DataSourceType)
+			fmt.Printf("  名称: %s\n", segment.Document.Name)
+			if segment.Document.DocType != nil {
+				fmt.Printf("  类型: %s\n", *segment.Document.DocType)
+			}
+		}
+		fmt.Printf("相关度分数: %.10f\n", record.Score)
+		if record.TsnePosition != nil {
+			fmt.Printf("TSNE位置: %.10f\n", *record.TsnePosition)
+		}
+	}
 }

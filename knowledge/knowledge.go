@@ -27,6 +27,9 @@ type Client interface {
 
 	// 文档删除操作
 	DeleteDocument(ctx context.Context, datasetID string, documentID string) error
+
+	// 知识库检索操作
+	Retrieve(ctx context.Context, datasetID string, req *RetrieveRequest) (*RetrieveResponse, error)
 }
 
 // client 实现 Client 接口

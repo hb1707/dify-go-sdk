@@ -62,6 +62,7 @@ type Document struct {
 	DataSourceInfo       map[string]interface{} `json:"data_source_info"`        // 数据源信息
 	DatasetProcessRuleID string                 `json:"dataset_process_rule_id"` // 数据集处理规则ID
 	Name                 string                 `json:"name"`                    // 文档名称
+	DocType              *string                `json:"doc_type"`                // 文档类型
 	CreatedFrom          string                 `json:"created_from"`            // 创建来源
 	CreatedBy            string                 `json:"created_by"`              // 创建者
 	CreatedAt            int64                  `json:"created_at"`              // 创建时间
@@ -193,4 +194,51 @@ type UpdateDocumentByFileRequest struct {
 	DocType     string                 `json:"doc_type,omitempty"`     // 文档类型（选填）
 	DocMetadata map[string]interface{} `json:"doc_metadata,omitempty"` // 文档元数据（如提供文档类型则必填）
 	ProcessRule *ProcessRule           `json:"process_rule,omitempty"` // 处理规则（选填）
+}
+
+// RetrieveRequest 检索知识库请求
+type RetrieveRequest struct {
+	Query          string          `json:"query"`                     // 检索关键词
+	RetrievalModel *RetrievalModel `json:"retrieval_model,omitempty"` // 检索参数（选填）
+}
+
+// RetrieveResponse 检索知识库响应
+type RetrieveResponse struct {
+	Query struct {
+		Content string `json:"content"` // 查询内容
+	} `json:"query"`
+	Records []Record `json:"records"` // 检索结果记录列表
+}
+
+// Record 检索结果记录
+type Record struct {
+	Segment      Segment  `json:"segment"`       // 文档片段
+	Score        float64  `json:"score"`         // 相关度分数
+	TsnePosition *float64 `json:"tsne_position"` // TSNE 位置（可选）
+}
+
+// Segment 检索结果片段
+type Segment struct {
+	ID            string    `json:"id"`              // 片段ID
+	Position      int       `json:"position"`        // 位置
+	DocumentID    string    `json:"document_id"`     // 文档ID
+	Content       string    `json:"content"`         // 内容
+	Answer        *string   `json:"answer"`          // 答案（可选）
+	WordCount     int       `json:"word_count"`      // 字数统计
+	Tokens        int       `json:"tokens"`          // token数量
+	Keywords      []string  `json:"keywords"`        // 关键词列表
+	IndexNodeID   string    `json:"index_node_id"`   // 索引节点ID
+	IndexNodeHash string    `json:"index_node_hash"` // 索引节点哈希值
+	HitCount      int       `json:"hit_count"`       // 命中次数
+	Enabled       bool      `json:"enabled"`         // 是否启用
+	DisabledAt    *int64    `json:"disabled_at"`     // 禁用时间
+	DisabledBy    *string   `json:"disabled_by"`     // 禁用者
+	Status        string    `json:"status"`          // 状态
+	CreatedBy     string    `json:"created_by"`      // 创建者
+	CreatedAt     int64     `json:"created_at"`      // 创建时间
+	IndexingAt    int64     `json:"indexing_at"`     // 索引时间
+	CompletedAt   int64     `json:"completed_at"`    // 完成时间
+	Error         *string   `json:"error"`           // 错误信息
+	StoppedAt     *int64    `json:"stopped_at"`      // 停止时间
+	Document      *Document `json:"document"`        // 文档信息
 }

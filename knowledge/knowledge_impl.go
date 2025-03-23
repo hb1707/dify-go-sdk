@@ -121,3 +121,39 @@ func (c *client) DeleteKnowledge(ctx context.Context, knowledgeID string) error 
 
 	return nil
 }
+
+// Retrieve 检索知识库
+func (c *client) Retrieve(ctx context.Context, datasetID string, req *RetrieveRequest) (*RetrieveResponse, error) {
+	url := fmt.Sprintf("%s/datasets/%s/retrieve", c.baseURL, datasetID)
+
+	jsonData, err := json.Marshal(req)
+	if err != nil {
+		return nil, fmt.Errorf("序列化请求失败: %v", err)
+	}
+
+	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewBuffer(jsonData))
+	if err != nil {
+		return nil, fmt.Errorf("创建请求失败: %v", err)
+	}
+
+	httpReq.Header.Set("Authorization", c.apiKey)
+	httpReq.Header.Set("Content-Type", "application/json")
+
+	resp, err := c.httpClient.Do(httpReq)
+	if err != nil {
+		return nil, fmt.Errorf("发送请求失败: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("请求失败，状态码: %d，响应: %s", resp.StatusCode, string(body))
+	}
+
+	var result RetrieveResponse
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("解析响应失败: %v", err)
+	}
+
+	return &result, nil
+}
