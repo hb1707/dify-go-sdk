@@ -39,15 +39,15 @@ func (c *client) CreateDocumentByText(ctx context.Context, datasetID string, req
 	}
 
 	var result struct {
-		Data  *Document `json:"data"`
-		Batch string    `json:"batch"`
+		Document Document `json:"document"`
+		Batch    string   `json:"batch"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, fmt.Errorf("decode response failed: %w", err)
 	}
 	fmt.Printf("batch: %v", result.Batch)
 
-	return result.Data, nil
+	return &result.Document, nil
 }
 
 // CreateDocumentByFile 通过文件创建文档
@@ -60,7 +60,7 @@ func (c *client) CreateDocumentByFile(ctx context.Context, datasetID string, req
 	writer := multipart.NewWriter(body)
 
 	// 添加文件
-	part, err := writer.CreateFormFile("file", "document.txt")
+	part, err := writer.CreateFormFile("file", req.Name)
 	if err != nil {
 		return nil, fmt.Errorf("创建文件表单失败: %v", err)
 	}
@@ -145,13 +145,13 @@ func (c *client) CreateDocumentByFile(ctx context.Context, datasetID string, req
 
 	// 解析响应
 	var result struct {
-		Data *Document `json:"data"`
+		Document Document `json:"document"`
 	}
 	if err := json.Unmarshal(respBody, &result); err != nil {
 		return nil, fmt.Errorf("解析响应失败: %v", err)
 	}
 
-	return result.Data, nil
+	return &result.Document, nil
 }
 
 // GetDocumentIndexingStatus 获取文档嵌入状态
@@ -177,12 +177,12 @@ func (c *client) GetDocumentIndexingStatus(ctx context.Context, datasetID string
 	}
 
 	// 读取响应体
-	var statuses *DocumentIndexingStatus
+	var statuses DocumentIndexingStatus
 	if err := json.NewDecoder(resp.Body).Decode(&statuses); err != nil {
 		return nil, fmt.Errorf("decode response failed: %w", err)
 	}
 
-	return statuses, nil
+	return &statuses, nil
 }
 
 // UpdateDocumentByText 通过文本更新文档
@@ -214,13 +214,13 @@ func (c *client) UpdateDocumentByText(ctx context.Context, datasetID string, doc
 	}
 
 	var result struct {
-		Data *Document `json:"data"`
+		Document Document `json:"document"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, fmt.Errorf("decode response failed: %w", err)
 	}
 
-	return result.Data, nil
+	return &result.Document, nil
 }
 
 // UpdateDocumentByFile 通过文件更新文档
@@ -294,13 +294,13 @@ func (c *client) UpdateDocumentByFile(ctx context.Context, datasetID string, doc
 
 	// 解析响应
 	var result struct {
-		Data *Document `json:"data"`
+		Document Document `json:"document"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, fmt.Errorf("解析响应失败: %v", err)
 	}
 
-	return result.Data, nil
+	return &result.Document, nil
 }
 
 // DeleteDocument 删除文档
