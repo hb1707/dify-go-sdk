@@ -412,19 +412,7 @@ func testUpdateDocumentByText() {
 		return
 	}
 
-	fmt.Printf("文档更新成功:\n")
-	fmt.Printf("ID: %s\n", doc.ID)
-	fmt.Printf("名称: %s\n", doc.Name)
-	fmt.Printf("数据源类型: %s\n", doc.DataSourceType)
-	fmt.Printf("创建时间: %d\n", doc.CreatedAt)
-	fmt.Printf("Token数量: %d\n", doc.Tokens)
-	fmt.Printf("索引状态: %s\n", doc.IndexingStatus)
-	fmt.Printf("是否启用: %v\n", doc.Enabled)
-	fmt.Printf("是否归档: %v\n", doc.Archived)
-	fmt.Printf("显示状态: %s\n", doc.DisplayStatus)
-	fmt.Printf("字数统计: %d\n", doc.WordCount)
-	fmt.Printf("命中次数: %d\n", doc.HitCount)
-	fmt.Printf("文档形式: %s\n", doc.DocForm)
+	fmt.Printf("文档更新成功: %+v\n", doc)
 }
 
 // testDeleteDocument 测试删除文档

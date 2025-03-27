@@ -16,7 +16,7 @@ type Result struct {
 }
 
 // CreateDocumentByText 通过文本创建文档
-func (c *client) CreateDocumentByText(ctx context.Context, datasetID string, req *CreateDocumentByTextRequest) (*Result, error) {
+func (c *Client) CreateDocumentByText(ctx context.Context, datasetID string, req *CreateDocumentByTextRequest) (*Result, error) {
 	url := fmt.Sprintf("%s/datasets/%s/document/create-by-text", c.baseURL, datasetID)
 
 	jsonData, err := json.Marshal(req)
@@ -52,7 +52,7 @@ func (c *client) CreateDocumentByText(ctx context.Context, datasetID string, req
 }
 
 // CreateDocumentByFile 通过文件创建文档
-func (c *client) CreateDocumentByFile(ctx context.Context, datasetID string, req *CreateDocumentByFileRequest, file io.Reader) (*Result, error) {
+func (c *Client) CreateDocumentByFile(ctx context.Context, datasetID string, req *CreateDocumentByFileRequest, file io.Reader) (*Result, error) {
 	// 构造 API URL
 	url := fmt.Sprintf("%s/datasets/%s/document/create-by-file", c.baseURL, datasetID)
 
@@ -154,7 +154,7 @@ func (c *client) CreateDocumentByFile(ctx context.Context, datasetID string, req
 }
 
 // GetDocumentIndexingStatus 获取文档嵌入状态
-func (c *client) GetDocumentIndexingStatus(ctx context.Context, datasetID string, batch string) (*DocumentIndexingStatus, error) {
+func (c *Client) GetDocumentIndexingStatus(ctx context.Context, datasetID string, batch string) (*DocumentIndexingStatus, error) {
 	url := fmt.Sprintf("%s/datasets/%s/documents/%s/indexing-status", c.baseURL, datasetID, batch)
 
 	httpReq, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
@@ -185,7 +185,7 @@ func (c *client) GetDocumentIndexingStatus(ctx context.Context, datasetID string
 }
 
 // UpdateDocumentByText 通过文本更新文档
-func (c *client) UpdateDocumentByText(ctx context.Context, datasetID string, documentID string, req *UpdateDocumentByTextRequest) (*Result, error) {
+func (c *Client) UpdateDocumentByText(ctx context.Context, datasetID string, documentID string, req *UpdateDocumentByTextRequest) (*Result, error) {
 	url := fmt.Sprintf("%s/datasets/%s/documents/%s/update-by-text", c.baseURL, datasetID, documentID)
 
 	jsonData, err := json.Marshal(req)
@@ -221,7 +221,7 @@ func (c *client) UpdateDocumentByText(ctx context.Context, datasetID string, doc
 }
 
 // UpdateDocumentByFile 通过文件更新文档
-func (c *client) UpdateDocumentByFile(ctx context.Context, datasetID string, documentID string, req *UpdateDocumentByFileRequest, file io.Reader) (*Result, error) {
+func (c *Client) UpdateDocumentByFile(ctx context.Context, datasetID string, documentID string, req *UpdateDocumentByFileRequest, file io.Reader) (*Result, error) {
 	url := fmt.Sprintf("%s/datasets/%s/documents/%s/update-by-file", c.baseURL, datasetID, documentID)
 
 	// 创建 multipart form
@@ -304,7 +304,7 @@ func (c *client) UpdateDocumentByFile(ctx context.Context, datasetID string, doc
 }
 
 // DeleteDocument 删除文档
-func (c *client) DeleteDocument(ctx context.Context, datasetID string, documentID string) error {
+func (c *Client) DeleteDocument(ctx context.Context, datasetID string, documentID string) error {
 	url := fmt.Sprintf("%s/datasets/%s/documents/%s", c.baseURL, datasetID, documentID)
 
 	httpReq, err := http.NewRequestWithContext(ctx, http.MethodDelete, url, nil)

@@ -10,7 +10,7 @@ import (
 )
 
 // CreateKnowledge 创建知识库
-func (c *client) CreateKnowledge(ctx context.Context, req *CreateKnowledgeRequest) (*Knowledge, error) {
+func (c *Client) CreateKnowledge(ctx context.Context, req *CreateKnowledgeRequest) (*Knowledge, error) {
 	url := fmt.Sprintf("%s/datasets", c.baseURL)
 	jsonData, err := json.Marshal(req)
 	if err != nil {
@@ -45,7 +45,7 @@ func (c *client) CreateKnowledge(ctx context.Context, req *CreateKnowledgeReques
 }
 
 // ListKnowledge 列出知识库
-func (c *client) ListKnowledge(ctx context.Context, req *ListKnowledgeRequest) (*ListKnowledgeResponse, error) {
+func (c *Client) ListKnowledge(ctx context.Context, req *ListKnowledgeRequest) (*ListKnowledgeResponse, error) {
 	url := fmt.Sprintf("%s/datasets", c.baseURL)
 
 	// 构建查询参数
@@ -99,7 +99,7 @@ func (c *client) ListKnowledge(ctx context.Context, req *ListKnowledgeRequest) (
 }
 
 // DeleteKnowledge 删除知识库
-func (c *client) DeleteKnowledge(ctx context.Context, knowledgeID string) error {
+func (c *Client) DeleteKnowledge(ctx context.Context, knowledgeID string) error {
 	url := fmt.Sprintf("%s/datasets/%s", c.baseURL, knowledgeID)
 	httpReq, err := http.NewRequestWithContext(ctx, http.MethodDelete, url, nil)
 	if err != nil {
@@ -123,7 +123,7 @@ func (c *client) DeleteKnowledge(ctx context.Context, knowledgeID string) error 
 }
 
 // Retrieve 检索知识库
-func (c *client) Retrieve(ctx context.Context, datasetID string, req *RetrieveRequest) (*RetrieveResponse, error) {
+func (c *Client) Retrieve(ctx context.Context, datasetID string, req *RetrieveRequest) (*RetrieveResponse, error) {
 	url := fmt.Sprintf("%s/datasets/%s/retrieve", c.baseURL, datasetID)
 
 	jsonData, err := json.Marshal(req)
