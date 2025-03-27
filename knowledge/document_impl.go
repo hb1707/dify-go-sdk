@@ -10,8 +10,13 @@ import (
 	"net/http"
 )
 
+type Result struct {
+	Document Document `json:"document"`
+	Batch    string   `json:"batch"`
+}
+
 // CreateDocumentByText 通过文本创建文档
-func (c *client) CreateDocumentByText(ctx context.Context, datasetID string, req *CreateDocumentByTextRequest) (*Document, error) {
+func (c *client) CreateDocumentByText(ctx context.Context, datasetID string, req *CreateDocumentByTextRequest) (*Result, error) {
 	url := fmt.Sprintf("%s/datasets/%s/document/create-by-text", c.baseURL, datasetID)
 
 	jsonData, err := json.Marshal(req)
@@ -32,26 +37,22 @@ func (c *client) CreateDocumentByText(ctx context.Context, datasetID string, req
 		return nil, fmt.Errorf("do request failed: %w", err)
 	}
 	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(resp.Body)
-		return nil, fmt.Errorf("request failed with status %d: %s", resp.StatusCode, string(body))
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("read response body failed: %w", err)
 	}
 
-	var result struct {
-		Document Document `json:"document"`
-		Batch    string   `json:"batch"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	var result Result
+	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, fmt.Errorf("decode response failed: %w", err)
 	}
 	fmt.Printf("batch: %v", result.Batch)
 
-	return &result.Document, nil
+	return &result, nil
 }
 
 // CreateDocumentByFile 通过文件创建文档
-func (c *client) CreateDocumentByFile(ctx context.Context, datasetID string, req *CreateDocumentByFileRequest, file io.Reader) (*Document, error) {
+func (c *client) CreateDocumentByFile(ctx context.Context, datasetID string, req *CreateDocumentByFileRequest, file io.Reader) (*Result, error) {
 	// 构造 API URL
 	url := fmt.Sprintf("%s/datasets/%s/document/create-by-file", c.baseURL, datasetID)
 
@@ -144,14 +145,12 @@ func (c *client) CreateDocumentByFile(ctx context.Context, datasetID string, req
 	}
 
 	// 解析响应
-	var result struct {
-		Document Document `json:"document"`
-	}
+	var result Result
 	if err := json.Unmarshal(respBody, &result); err != nil {
 		return nil, fmt.Errorf("解析响应失败: %v", err)
 	}
 
-	return &result.Document, nil
+	return &result, nil
 }
 
 // GetDocumentIndexingStatus 获取文档嵌入状态
@@ -171,14 +170,14 @@ func (c *client) GetDocumentIndexingStatus(ctx context.Context, datasetID string
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(resp.Body)
-		return nil, fmt.Errorf("request failed with status %d: %s", resp.StatusCode, string(body))
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("read response body failed: %w", err)
 	}
 
 	// 读取响应体
 	var statuses DocumentIndexingStatus
-	if err := json.NewDecoder(resp.Body).Decode(&statuses); err != nil {
+	if err := json.Unmarshal(body, &statuses); err != nil {
 		return nil, fmt.Errorf("decode response failed: %w", err)
 	}
 
@@ -186,7 +185,7 @@ func (c *client) GetDocumentIndexingStatus(ctx context.Context, datasetID string
 }
 
 // UpdateDocumentByText 通过文本更新文档
-func (c *client) UpdateDocumentByText(ctx context.Context, datasetID string, documentID string, req *UpdateDocumentByTextRequest) (*Document, error) {
+func (c *client) UpdateDocumentByText(ctx context.Context, datasetID string, documentID string, req *UpdateDocumentByTextRequest) (*Result, error) {
 	url := fmt.Sprintf("%s/datasets/%s/documents/%s/update-by-text", c.baseURL, datasetID, documentID)
 
 	jsonData, err := json.Marshal(req)
@@ -208,23 +207,21 @@ func (c *client) UpdateDocumentByText(ctx context.Context, datasetID string, doc
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(resp.Body)
-		return nil, fmt.Errorf("request failed with status %d: %s", resp.StatusCode, string(body))
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("read response body failed: %w", err)
 	}
 
-	var result struct {
-		Document Document `json:"document"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	var result Result
+	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, fmt.Errorf("decode response failed: %w", err)
 	}
 
-	return &result.Document, nil
+	return &result, nil
 }
 
 // UpdateDocumentByFile 通过文件更新文档
-func (c *client) UpdateDocumentByFile(ctx context.Context, datasetID string, documentID string, req *UpdateDocumentByFileRequest, file io.Reader) (*Document, error) {
+func (c *client) UpdateDocumentByFile(ctx context.Context, datasetID string, documentID string, req *UpdateDocumentByFileRequest, file io.Reader) (*Result, error) {
 	url := fmt.Sprintf("%s/datasets/%s/documents/%s/update-by-file", c.baseURL, datasetID, documentID)
 
 	// 创建 multipart form
@@ -286,21 +283,24 @@ func (c *client) UpdateDocumentByFile(ctx context.Context, datasetID string, doc
 	}
 	defer resp.Body.Close()
 
+	// 读取响应体
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("读取响应失败: %v", err)
+	}
+
 	// 检查响应状态码
 	if resp.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(resp.Body)
-		return nil, fmt.Errorf("请求失败，状态码: %d，响应: %s", resp.StatusCode, string(body))
+		return nil, fmt.Errorf("request failed with status %d: %s", resp.StatusCode, string(respBody))
 	}
 
 	// 解析响应
-	var result struct {
-		Document Document `json:"document"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	var result Result
+	if err := json.Unmarshal(respBody, &result); err != nil {
 		return nil, fmt.Errorf("解析响应失败: %v", err)
 	}
 
-	return &result.Document, nil
+	return &result, nil
 }
 
 // DeleteDocument 删除文档
