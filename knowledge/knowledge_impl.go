@@ -144,16 +144,14 @@ func (c *Client) Retrieve(ctx context.Context, datasetID string, req *RetrieveRe
 		return nil, fmt.Errorf("发送请求失败: %v", err)
 	}
 	defer resp.Body.Close()
-
+	body, _ := io.ReadAll(resp.Body)
 	if resp.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(resp.Body)
 		return nil, fmt.Errorf("请求失败，状态码: %d，响应: %s", resp.StatusCode, string(body))
 	}
-
 	var result RetrieveResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	err = json.Unmarshal(body, &result)
+	if err != nil {
 		return nil, fmt.Errorf("解析响应失败: %v", err)
 	}
-
 	return &result, nil
 }
