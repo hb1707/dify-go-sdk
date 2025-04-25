@@ -63,7 +63,7 @@ func (c *Client) CreateStreamingChat(req *ChatRequest, handler StreamHandler) er
 		return fmt.Errorf("failed to marshal request: %w", err)
 	}
 
-	httpReq, err := http.NewRequest("POST", endpoint, bytes.NewReader(body))
+	httpReq, err := http.NewRequestWithContext(c.Ctx, "POST", endpoint, bytes.NewReader(body))
 	if err != nil {
 		return fmt.Errorf("failed to create request: %w", err)
 	}
@@ -74,6 +74,7 @@ func (c *Client) CreateStreamingChat(req *ChatRequest, handler StreamHandler) er
 	httpReq.Header.Set("Connection", "keep-alive")
 	httpReq.Header.Set("Cache-Control", "no-cache")
 	httpReq.Header.Set("Transfer-Encoding", "chunked")
+	httpReq.Header.Set("Accept-Encoding", "identity")
 
 	resp, err := c.HTTPClient.Do(httpReq)
 	if err != nil {

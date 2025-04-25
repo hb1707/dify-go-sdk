@@ -1,6 +1,7 @@
 package dify
 
 import (
+	"context"
 	"net/http"
 	"time"
 )
@@ -13,6 +14,8 @@ type Client struct {
 	APIKey string
 	// HTTPClient is the HTTP client used for making requests
 	HTTPClient *http.Client
+	// Ctx is the context for API requests
+	Ctx context.Context
 }
 
 // ClientOption 定义客户端选项接口
@@ -44,7 +47,7 @@ func WithHTTPClient(httpClient *http.Client) ClientOption {
 // NewClient creates a new Dify API client
 func NewClient(apiKey string, opts ...ClientOption) *Client {
 	httpClient := &http.Client{
-		Timeout: time.Minute * 10,
+		Timeout: time.Minute * 20,
 		Transport: &http.Transport{
 			MaxIdleConns:        100,
 			MaxIdleConnsPerHost: 100,
