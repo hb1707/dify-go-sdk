@@ -150,6 +150,17 @@ func (c *Client) WorkflowRunStreaming(request WorkflowRequest, handler StreamHan
 			if err := handler.OnTTS(&resp); err != nil {
 				return err
 			}
+		case "tts_message_end":
+			var resp TTSStreamResponse
+			if err := json.Unmarshal([]byte(data), &resp); err != nil {
+				if err := handler.OnError(err); err != nil {
+					return err
+				}
+				continue
+			}
+			if err := handler.OnTTSEnd(&resp); err != nil {
+				return err
+			}
 		default:
 			var resp WorkflowStreamResponse
 			if err := json.Unmarshal([]byte(data), &resp); err != nil {

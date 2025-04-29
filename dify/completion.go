@@ -56,6 +56,7 @@ type StreamHandler interface {
 	OnMessageWorkflow(response *WorkflowStreamResponse) error
 	OnMessageEnd(response *MessageEndStreamResponse) error
 	OnTTS(response *TTSStreamResponse) error
+	OnTTSEnd(response *TTSStreamResponse) error
 	OnError(err error) error
 }
 
@@ -97,7 +98,12 @@ func (c *Client) CreateStreamingCompletion(req *CompletionRequest, handler Strea
 		// 读取一行数据直到遇到 \n\n
 		line, err := reader.ReadString('\n')
 		if err != nil {
-			if err == io.EOF {
+			if err.Error() == "context canceled" || err == io.EOF {
+				var resp MessageEndStreamResponse
+				resp.StreamResponse.Event = "message_end"
+				if err := handler.OnMessageEnd(&resp); err != nil {
+					return err
+				}
 				break
 			}
 			return fmt.Errorf("failed to read stream: %w", err)
@@ -139,14 +145,14 @@ func (c *Client) CreateStreamingCompletion(req *CompletionRequest, handler Strea
 			}
 
 		case "message_end":
-			var resp MessageEndStreamResponse
+			var resp MessageStreamResponse
 			if err := json.Unmarshal([]byte(data), &resp); err != nil {
 				if err := handler.OnError(err); err != nil {
 					return err
 				}
 				continue
 			}
-			if err := handler.OnMessageEnd(&resp); err != nil {
+			if err := handler.OnMessage(&resp); err != nil {
 				return err
 			}
 
@@ -161,7 +167,17 @@ func (c *Client) CreateStreamingCompletion(req *CompletionRequest, handler Strea
 			if err := handler.OnTTS(&resp); err != nil {
 				return err
 			}
-
+		case "tts_message_end":
+			var resp TTSStreamResponse
+			if err := json.Unmarshal([]byte(data), &resp); err != nil {
+				if err := handler.OnError(err); err != nil {
+					return err
+				}
+				continue
+			}
+			if err := handler.OnTTSEnd(&resp); err != nil {
+				return err
+			}
 		}
 
 	}
