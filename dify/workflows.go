@@ -23,7 +23,7 @@ type WorkflowDataResp struct {
 	WorkflowId  string         `json:"workflow_id"`
 	Status      string         `json:"status"`
 	Outputs     map[string]any `json:"outputs"`
-	Error       any            `json:"error"`
+	Error       string         `json:"error"`
 	ElapsedTime float64        `json:"elapsed_time"`
 	TotalTokens int            `json:"total_tokens"`
 	TotalSteps  int            `json:"total_steps"`
